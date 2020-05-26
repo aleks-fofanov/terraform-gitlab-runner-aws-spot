@@ -30,6 +30,7 @@ This module provisions a self-hosted Gitlab runner with
 AWS Spot instances.
 
 **Architecture**
+
 The architecture is quite standard and mainly consists of EC2 instance (aka maanger) which has all required software
 installed and automatically registers itself with Gitlab. It spawns worker Spot instances which run CI/CD jobs and
 doesn't run any jobs itself.
@@ -125,7 +126,7 @@ module "gitlab_runner" {
   namespace = "cp"
   stage     = "prod"
 
-  region            = "us-west-2
+  region            = "us-west-2"
   availability_zone = "d"
 
   registration_token = "XXXXXXXX"
@@ -241,7 +242,7 @@ module "gitlab_runner" {
   namespace = "cp"
   stage     = "prod"
 
-  region            = "us-west-2
+  region            = "us-west-2"
   availability_zone = "d"
 
   registration_token_ssm_param           = "/prod/stack/gitlab-runner/registration_token"
