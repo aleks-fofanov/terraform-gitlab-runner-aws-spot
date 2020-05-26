@@ -49,7 +49,7 @@ EOF
 
 REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
 sed -i -e "s/region = us-east-1/region = $REGION/g" /etc/awslogs/awscli.conf
-e
+
 INSTANCE_ID=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .instanceId)
 sed -i -e "s/{InstanceId}/$INSTANCE_ID/g" /etc/awslogs/awslogs.conf
 

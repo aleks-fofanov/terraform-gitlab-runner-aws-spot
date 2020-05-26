@@ -97,7 +97,7 @@ if [[ ! -z ${SSM_PARAM_NAME} ]]; then
 fi
 
 if [[ "${AUTH_TOKEN}" == "" ]] || [[ "${AUTH_TOKEN}" == "empty" ]] || [[ "${AUTH_TOKEN}" == "null" ]]; then
-    echo "Auth is either an empty string or a string container 'null' or 'empty' value"
+    echo "Auth is either an empty string or a string containing 'null' or 'empty' value"
     exit 2
 fi
 
