@@ -49,7 +49,7 @@ introduction: |-
 
   **Architecture**
   
-  The architecture is quite standard and mainly consists of EC2 instance (aka maanger) which has all required software
+  The architecture is quite standard and mainly consists of EC2 instance (aka manager) which has all required software
   installed and automatically registers itself with Gitlab. It spawns worker Spot instances which run CI/CD jobs and
   doesn't run any jobs itself.
 
