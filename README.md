@@ -39,7 +39,7 @@ doesn't run any jobs itself.
   - [Registration token](https://docs.gitlab.com/ee/api/runners.html#registration-and-authentication-tokens)
     can be passed to the module directly via variable or parameter in `SSM Parameter Store` (**Preferred!**)
   - [Authentication token](https://docs.gitlab.com/ee/api/runners.html#registration-and-authentication-tokens)
-    is be stored in `SSM Parameter Store`
+    is stored in `SSM Parameter Store`
   - Utilizes [forked version of Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html#forked-version-of-docker-machine)
   - Supports docker images for CI/CD jobs stored in `ECR` repositories
   - Supports [distributed cache feature](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching)
