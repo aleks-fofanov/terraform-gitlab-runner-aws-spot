@@ -5,6 +5,7 @@ repos:
       - id: terraform_fmt
       - id: terraform_docs_replace
         args: ['--with-aggregate-type-defaults', '--dest=docs/terraform.md']
+        exclude: ^examples/
   - repo: local
     hooks:
         - id: build-readme

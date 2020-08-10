@@ -44,18 +44,19 @@ description: |-
 
 introduction: |-
   This module provisions a self-hosted Gitlab runner with
-  [docker+machine executor](https://docs.gitlab.com/runner/executors/docker_machine.html) and auto-scaling based on
-  AWS Spot instances.
+  [docker+machine executor](https://docs.gitlab.com/runner/executors/docker_machine.html) and auto-scaling
+  configuration.
 
   **Architecture**
   
   The architecture is quite standard and mainly consists of EC2 instance (aka manager) which has all required software
-  installed and automatically registers itself with Gitlab. It spawns worker Spot instances which run CI/CD jobs and
+  installed and automatically registers itself with Gitlab. It spawns worker instances which run CI/CD jobs and
   doesn't run any jobs itself.
 
   **Features**:
+    - Allows to use both spot and regular on-demand EC2 instances for worker instance which run CI/CD jobs
     - [Registration token](https://docs.gitlab.com/ee/api/runners.html#registration-and-authentication-tokens)
-      can be passed to the module directly via variable or parameter in `SSM Parameter Store` (**Preferred!**)
+      can be passed to the module directly via variable or parameter in `SSM Parameter Store` (**Recommended!**)
     - [Authentication token](https://docs.gitlab.com/ee/api/runners.html#registration-and-authentication-tokens)
       is stored in `SSM Parameter Store`
     - Utilizes [forked version of Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html#forked-version-of-docker-machine)
@@ -67,7 +68,7 @@ introduction: |-
       shipped to `Cloudwatch` by default
     - Manager instance can be accessed via SSH or
       [SSM Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html)
-      (**Preferred!**)
+      (**Recommended!**)
     - Gitlab runner's [metrics port](https://docs.gitlab.com/runner/monitoring/) can be opened to certain CIDR blocks
     - Gitlab runner is automatically deregistered (removed from Gitlab) on manager instance reboot or shutdown
 
@@ -75,8 +76,8 @@ introduction: |-
     - This module is designed to work with `Amazon Linux 2` AMIs. **Other Linux distros most likely won't work!**
 
   **Security considerations**:
-    - `SSM Session Manager` is a preferred way of accessing manager instance as it provides centralized access control,
-      full audit and activity logging
+    - `SSM Session Manager` is a recommended way of accessing manager instance as it provides centralized access
+      control, full audit and activity logging
     - Consider limiting self-hosted runners to private and internal repositories as running CI/CD pipelines for public
       repositories on your infrastructure introduce additional attack surface
     - Consider dedicating a separate VPC, subnets and AWS (sub)account for Gitlab Runners to reduce blast radius and
@@ -86,9 +87,9 @@ introduction: |-
       for your infrastructure may also be a wise choice
 
   **Cost optimization recommendations**:
-    - Consider purchasing `Savings Plan` or `Reserved Instance` for manager instance
+    - Consider purchasing `Savings Plan` or `Reserved request_spot_instances = trueInstance` for manager instance
     - Consider using AMD-powered EC2 instance types for manager instance (they are 10% cheaper compared to the
-      Intel-powered Instances at the moment of this writing)
+      Intel-powered instances at the moment of this writing)
 
   **Other recommendations**:
     - If you use distributed cache feature, consider provisioning
@@ -99,13 +100,15 @@ introduction: |-
       [Caveats related to Spot instances usage](https://docs.gitlab.com/runner/configuration/runner_autoscale_aws/#caveats-of-spot-instances) for running
       CI/CD jobs
 
-  **TODOs**:
-    - Allow manager instance deployment as ECS service with Fargate launch type
-    - Switch to Circle CI for CI/CD pipelines
-    - Add tests
-    - Add examples to the repo
+  **Backlog**:
+    - [ ] Allow manager instance deployment as ECS service with Fargate launch type
+    - [ ] Switch to Circle CI for CI/CD pipelines
+    - [ ] Add tests
+    - [x] Add examples to the repo
+    - [x] Support [Autoscaling periods](https://docs.gitlab.com/runner/configuration/autoscale.html#autoscaling-periods-configuration)
+    - [x] Add an option to request regular on-demand instances instead of the spot
 
-  This module is backed by best of breed terraform modules maintained by [Cloudposse](https://github.com/cloudposse).
+  This module is backed by best of breed terraform modrequest_spot_instances = trueules maintained by [Cloudposse](https://github.com/cloudposse).
 
 # How to use this project
 usage: |-
@@ -168,146 +171,35 @@ usage: |-
       tags      = ["shared", "docker", "spot", "us-west-2d"]
       image     = "docker:19.03.8"
 
-      instance_type       = "m5.large"
+      instance_type       = "c5.large"
       ami_id              = data.aws_ami.ubuntu_18_04.id
       use_private_address = true
 
-      spot_bid_price      = 0.09
-      spot_block_duration = 60
       run_untagged        = false
       lock_to_project     = true
+
+      spot_bid_price      = 0.09
+      spot_block_duration = 60
+      request_spot_instances = true
 
       idle = {
         count = 0
         time  = 1200
       }
-      off_peak = {
-        timezone   = "Asia/Krasnoyarsk"
-        idle_count = 0
-        idle_time  = 1200
-        periods = [
-          "* * 0-9,19-23 * * mon-fri *",
-          "* * * * * sat,sun *"
-        ]
-      }
+      autoscaling_periods = [
+        {
+          periods = ["* * 9-17 * * mon-fri *"]
+          idle_count = 1
+          idle_time = 1200
+          timezone = "UTC"
+        }
+      ]
     }
   }
   ```
 
 examples: |-
-  ### Complete example
-
-  This example provisions a VPC, subnets and a Gitlab runner in `us-west-2` region in availabilitu zone `d` with
-  registration and authentication tokens stored in specified SSM Parameters
-
-  ```hcl
-  data "aws_ami" "amzn_linux_2" {
-   most_recent = true
-   owners      = ["amazon"]
-
-   filter {
-     name   = "name"
-     values = ["amzn2-ami-hvm-*-x86_64-ebs"]
-   }
-  }
-
-  data "aws_ami" "ubuntu_18_04" {
-    most_recent = true
-    owners      = ["099720109477"]
-
-    filter {
-      name   = "name"
-      values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
-    }
-  }
-
-  module "vpc" {
-    source    = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=master"
-    name      = "stack"
-    namespace = "cp"
-    stage     = "prod"
-
-    cidr_block = "10.0.0.0/16"
-  }
-
-  module "subnets" {
-    source    = "git::https://github.com/cloudposse/terraform-aws-dynamic-subnets.git?ref=master"
-    name      = "stack"
-    namespace = "cp"
-    stage     = "prod"
-
-    availability_zones      = ["us-west-2d"]
-    vpc_id                  = module.vpc.vpc_id
-    igw_id                  = module.vpc.igw_id
-    cidr_block              = module.vpc.vpc_cidr_block
-    nat_gateway_enabled     = false
-    nat_instance_enabled    = false
-    map_public_ip_on_launch = false
-  }
-
-  module "gitlab_runner" {
-    source    = "git::https://github.com/aleks-fofanov/terraform-gitlab-runner-aws-spot.git?ref=master"
-    name      = "stack"
-    namespace = "cp"
-    stage     = "prod"
-
-    region            = "us-west-2"
-    availability_zone = "d"
-
-    registration_token_ssm_param           = "/prod/stack/gitlab-runner/registration_token"
-    registration_token_ssm_param_kms_key   = "alias/aws/ssm"
-    authentication_token_ssm_param         = "/prod/stack/gitlab-runner/authentication_token"
-    authentication_token_ssm_param_kms_key = "alias/aws/ssm"
-
-    vpc = {
-      vpc_id     = module.vpc.vpc_id
-      cidr_block = module.vpc.vpc_cidr_block
-    }
-
-    manager = {
-      ami_id                      = data.aws_ami.amzn_linux_2.id
-      ami_owner                   = "amazon"
-      instance_type               = "t3.micro"
-      key_pair                    = null
-      subnet_id                   = element(module.subnets.public_subnet_ids, 0)
-      associate_public_ip_address = true
-      assign_eip_address          = false
-      enable_detailed_monitoring  = false
-      root_volume_size            = 8
-      ebs_optimized               = false
-    }
-
-    runner = {
-      concurent = 2
-      limit     = 2
-      tags      = ["shared", "docker", "spot", "us-west-2d"]
-      image     = "docker:19.03.8"
-
-      instance_type       = "m5.large"
-      ami_id              = data.aws_ami.ubuntu_18_04.id
-      use_private_address = true
-
-      spot_bid_price      = 0.09
-      spot_block_duration = 60
-      run_untagged        = false
-      lock_to_project     = true
-
-      idle = {
-        count = 0
-        time  = 1200
-      }
-      off_peak = {
-        timezone   = "Asia/Krasnoyarsk"
-        idle_count = 0
-        idle_time  = 1200
-        periods = [
-          "* * 0-9,19-23 * * mon-fri *",
-          "* * * * * sat,sun *"
-        ]
-      }
-    }
-  }
-  ```
+  For more examples please refer to the `example` folder in this repo.
 
 include:
   - "docs/terraform.md"
