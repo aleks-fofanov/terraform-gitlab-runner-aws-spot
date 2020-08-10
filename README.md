@@ -90,7 +90,7 @@ doesn't run any jobs itself.
   - [x] Support [Autoscaling periods](https://docs.gitlab.com/runner/configuration/autoscale.html#autoscaling-periods-configuration)
   - [x] Add an option to request regular on-demand instances instead of the spot
 
-This module is backed by best of breed terraform modrequest_spot_instances = trueules maintained by [Cloudposse](https://github.com/cloudposse).
+This module is backed by best of breed terraform modules maintained by [Cloudposse](https://github.com/cloudposse).
 
 ## Usage
 
