@@ -22,7 +22,7 @@ data "aws_availability_zones" "aws_availability_zones" {
 #############################################################
 
 module "runner" {
-  source     = "git::https://github.com/aleks-fofanov/terraform-gitlab-runner-aws-spot.git?ref=tags/0.2.0"
+  source     = "git::https://github.com/aleks-fofanov/terraform-gitlab-runner-aws-spot.git?ref=tags/1.1.0"
   attributes = var.attributes
   delimiter  = var.delimiter
   name       = var.name
