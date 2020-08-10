@@ -4,7 +4,7 @@
 
 locals {
   registration_token_in_ssm_param        = var.registration_token_ssm_param != null ? true : false
-  registration_token_ssm_param_ecnrypted = var.registration_token_ssm_param_kms_key != null ? true : false
+  registration_token_ssm_param_encrypted = var.registration_token_ssm_param_kms_key != null ? true : false
 }
 
 #############################################################
@@ -18,7 +18,7 @@ data "aws_ssm_parameter" "registration_token" {
 }
 
 data "aws_kms_key" "registration_token" {
-  count = local.registration_token_in_ssm_param && local.registration_token_ssm_param_ecnrypted ? 1 : 0
+  count = local.registration_token_in_ssm_param && local.registration_token_ssm_param_encrypted ? 1 : 0
 
   key_id = var.registration_token_ssm_param_kms_key
 }
@@ -80,7 +80,7 @@ module "manager_instance" {
   root_volume_size = var.manager.root_volume_size
   ebs_optimized    = var.manager.ebs_optimized
 
-  user_data = data.template_file.user_data.rendered
+  user_data = local.manager_user_data_template_rendered
 }
 
 #############################################################
@@ -262,7 +262,7 @@ data "aws_iam_policy_document" "registration_token_ssm_param_permissions" {
 }
 
 data "aws_iam_policy_document" "registration_token_kms_permissions" {
-  count = local.registration_token_ssm_param_ecnrypted ? 1 : 0
+  count = local.registration_token_ssm_param_encrypted ? 1 : 0
 
   statement {
     effect = "Allow"

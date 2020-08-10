@@ -6,7 +6,6 @@
 | aws | ~> 2.12 |
 | local | ~> 1.2 |
 | null | ~> 2.1 |
-| template | ~> 2.1 |
 
 ## Providers
 
@@ -14,7 +13,6 @@
 |------|---------|
 | aws | ~> 2.12 |
 | null | ~> 2.1 |
-| template | ~> 2.1 |
 
 ## Inputs
 
@@ -36,7 +34,7 @@
 | enable\_cloudwatch\_logs | Defines whether manager instance should ship its logs to Cloudwatch | `bool` | `true` | no |
 | enable\_s3\_cache | Defines whether s3 should be created and used as a source for distributed cache | `bool` | `true` | no |
 | enable\_ssm\_sessions | Defines whether access via SSM Session Manager should be enabled for manager instance | `bool` | `true` | no |
-| gitlab\_runner\_version | Gitlab runner version to be installed on manager instance | `string` | `"12.10.0"` | no |
+| gitlab\_runner\_version | Gitlab runner version to be installed on manager instance | `string` | `"13.2.0"` | no |
 | gitlab\_url | Gitlab URL | `string` | `"https://gitlab.com"` | no |
 | manager | Runners' manager (aka bastion) configuration | <pre>object({<br>    ami_id                      = string<br>    ami_owner                   = string<br>    instance_type               = string<br>    key_pair                    = string<br>    subnet_id                   = string<br>    associate_public_ip_address = bool<br>    assign_eip_address          = bool<br>    root_volume_size            = number<br>    ebs_optimized               = bool<br>    enable_detailed_monitoring  = bool<br>  })</pre> | n/a | yes |
 | metrics\_port | See https://docs.gitlab.com/runner/monitoring/#configuration-of-the-metrics-http-server for more details | `number` | `9252` | no |
@@ -46,11 +44,10 @@
 | registration\_token | Runner registration token | `string` | `null` | no |
 | registration\_token\_ssm\_param | SSM Parameter name that stored runner registration token. This parameter takes precedence over `registration_token` | `string` | `null` | no |
 | registration\_token\_ssm\_param\_kms\_key | Identifier of KMS key used for encryption of SSM Parameter that stores registration token | `string` | `null` | no |
-| runner | Gitlab runner configuration. See https://docs.gitlab.com/runner/configuration/advanced-configuration.html | <pre>object({<br>    concurent = number<br>    limit     = number<br><br>    image = string<br>    tags  = list(string)<br><br>    use_private_address = bool<br>    instance_type       = string<br>    ami_id              = string<br><br>    spot_bid_price      = number<br>    spot_block_duration = number<br>    run_untagged        = bool<br>    lock_to_project     = bool<br><br>    idle = object({<br>      count = number<br>      time  = number<br>    })<br>    off_peak = object({<br>      timezone   = string<br>      idle_count = number<br>      idle_time  = number<br>      periods    = list(string)<br>    })<br>  })</pre> | n/a | yes |
+| runner | Gitlab runner configuration. See https://docs.gitlab.com/runner/configuration/advanced-configuration.html | <pre>object({<br>    concurrent = number<br>    limit      = number<br><br>    image = string<br>    tags  = list(string)<br><br>    use_private_address = bool<br>    instance_type       = string<br>    ami_id              = string<br><br>    run_untagged    = bool<br>    lock_to_project = bool<br><br>    idle = object({<br>      count = number<br>      time  = number<br>    })<br><br>    autoscaling_periods = list(object({<br>      periods    = list(string)<br>      idle_count = number<br>      idle_time  = number<br>      timezone   = string<br>    }))<br><br>    request_spot_instances = bool<br>    spot_bid_price         = number<br>    spot_block_duration    = number<br>  })</pre> | n/a | yes |
 | runner\_advanced\_config | Advanced configuration options for gitlab runner | <pre>object({<br>    pre_build_script                  = string<br>    post_build_script                 = string<br>    pre_clone_script                  = string<br>    environment                       = list(string)<br>    request_concurrency               = number<br>    output_limit                      = number<br>    shm_size                          = number<br>    max_builds                        = number<br>    pull_policy                       = string<br>    additional_volumes                = list(string)<br>    additional_docker_machine_options = list(string)<br>    root_volume_size                  = number<br>    ebs_optimized                     = bool<br>    enable_detailed_monitoring        = bool<br>  })</pre> | <pre>{<br>  "additional_docker_machine_options": [],<br>  "additional_volumes": [<br>    "/certs/client"<br>  ],<br>  "ebs_optimized": false,<br>  "enable_detailed_monitoring": false,<br>  "environment": [],<br>  "max_builds": 0,<br>  "output_limit": 4096,<br>  "post_build_script": "",<br>  "pre_build_script": "",<br>  "pre_clone_script": "",<br>  "pull_policy": "always",<br>  "request_concurrency": 1,<br>  "root_volume_size": 20,<br>  "shm_size": 0<br>}</pre> | no |
 | s3\_cache\_expiration | Number of days you want to retain cache in S3 bucket | `number` | `45` | no |
 | s3\_cache\_infrequent\_access\_transition | Number of days to persist in the standard storage tier before moving to the infrequent access tier | `number` | `30` | no |
-| shell | n/a | `string` | `"/bin/bash"` | no |
 | stage | Stage (e.g. `prod`, `dev`, `staging`) | `string` | `""` | no |
 | tags | Additional tags (e.g. `map(`BusinessUnit`,`XYZ`)` | `map(string)` | `{}` | no |
 | vpc | VPC configuration | <pre>object({<br>    vpc_id     = string<br>    cidr_block = string<br>  })</pre> | n/a | yes |

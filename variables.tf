@@ -106,8 +106,8 @@ variable "manager" {
 variable "runner" {
   description = "Gitlab runner configuration. See https://docs.gitlab.com/runner/configuration/advanced-configuration.html"
   type = object({
-    concurent = number
-    limit     = number
+    concurrent = number
+    limit      = number
 
     image = string
     tags  = list(string)
@@ -116,21 +116,24 @@ variable "runner" {
     instance_type       = string
     ami_id              = string
 
-    spot_bid_price      = number
-    spot_block_duration = number
-    run_untagged        = bool
-    lock_to_project     = bool
+    run_untagged    = bool
+    lock_to_project = bool
 
     idle = object({
       count = number
       time  = number
     })
-    off_peak = object({
-      timezone   = string
+
+    autoscaling_periods = list(object({
+      periods    = list(string)
       idle_count = number
       idle_time  = number
-      periods    = list(string)
-    })
+      timezone   = string
+    }))
+
+    request_spot_instances = bool
+    spot_bid_price         = number
+    spot_block_duration    = number
   })
 }
 
@@ -180,7 +183,7 @@ variable "docker_machine_version" {
 }
 
 variable "gitlab_runner_version" {
-  default     = "12.10.0"
+  default     = "13.2.0"
   type        = string
   description = "Gitlab runner version to be installed on manager instance"
 }
@@ -267,9 +270,4 @@ variable "allowed_ssh_cidr_blocks" {
   }))
   default     = []
   description = "CIDR blocks that should be able to communicate with manager's 22 port"
-}
-
-variable "shell" {
-  default     = "/bin/bash"
-  description = ""
 }

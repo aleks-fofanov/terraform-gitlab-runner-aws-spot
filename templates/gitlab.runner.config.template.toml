@@ -14,7 +14,7 @@
     image = "${image}"
     privileged = true
     disable_cache = false
-    volumes = [${additional_volumes}]
+    volumes = [%{ for volume in additional_volumes ~}"${volume}",%{ endfor ~}]
     shm_size = ${shm_size}
     pull_policy = "${pull_policy}"
 %{ if s3_cache_enabled }
@@ -45,13 +45,18 @@
       "amazonec2-root-size=${root_volume_size}",
       "amazonec2-use-ebs-optimized-instance=${ebs_optimized}",
       "amazonec2-monitoring=${enable_detailed_monitoring}",
-      "amazonec2-request-spot-instance=true",
+      "amazonec2-request-spot-instance=${request_spot_instances}",
       "amazonec2-spot-price=${spot_price}",
       "amazonec2-block-duration-minutes=${spot_block_duration}",
       "amazonec2-tags=${tags}",
-      ${other_machine_options}
+%{ for option in other_machine_options ~}
+      "${option}",
+%{ endfor ~}
     ]
-    OffPeakIdleCount = ${off_peak_idle_count}
-    OffPeakIdleTime = ${off_peak_idle_time}
-    OffPeakTimezone = "${off_peak_timezone}"
-    OffPeakPeriods = ${off_peak_periods}
+%{ for autoscaling_period in autoscaling_periods ~}
+    [[runners.machine.autoscaling]]
+      Periods = [%{ for period in autoscaling_period.periods ~}"${period}",%{ endfor ~}]
+      IdleCount = ${autoscaling_period.idle_count}
+      IdleTime = ${autoscaling_period.idle_time}
+      Timezone = "${autoscaling_period.timezone}"
+%{ endfor ~}
