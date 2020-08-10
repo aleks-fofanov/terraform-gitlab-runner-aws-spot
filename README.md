@@ -69,7 +69,7 @@ doesn't run any jobs itself.
     for your infrastructure may also be a wise choice
 
 **Cost optimization recommendations**:
-  - Consider purchasing `Savings Plan` or `Reserved Instance` for manager instance
+  - Consider purchasing `Savings Plan` or `Reserved request_spot_instances = trueInstance` for manager instance
   - Consider using AMD-powered EC2 instance types for manager instance (they are 10% cheaper compared to the
     Intel-powered instances at the moment of this writing)
 
@@ -90,7 +90,7 @@ doesn't run any jobs itself.
   - [x] Support [Autoscaling periods](https://docs.gitlab.com/runner/configuration/autoscale.html#autoscaling-periods-configuration)
   - [x] Add an option to request regular on-demand instances instead of the spot
 
-This module is backed by best of breed terraform modules maintained by [Cloudposse](https://github.com/cloudposse).
+This module is backed by best of breed terraform modrequest_spot_instances = trueules maintained by [Cloudposse](https://github.com/cloudposse).
 
 ## Usage
 
@@ -167,6 +167,7 @@ module "gitlab_runner" {
 
     spot_bid_price      = 0.09
     spot_block_duration = 60
+    request_spot_instances = true
 
     idle = {
       count = 0
