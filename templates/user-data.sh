@@ -103,9 +103,9 @@ chkconfig gitlab-runner-svc on
 systemctl enable gitlab-runner
 
 #############################################################
-# Registry Proxy for Docker Hub
+# Registry Mirror for Docker Hub
 #############################################################
 
-${registry_proxy_for_dockerhub_configuration}
+${registry_mirror_configuration}
 
 reboot
