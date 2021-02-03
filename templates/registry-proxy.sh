@@ -9,3 +9,17 @@ docker run -d -p ${port}:5000 \
     -e REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io \
     --restart always \
     --name registry registry:2
+
+mkdir -p /root/.docker/
+
+if [[ -f "/root/.docker/config.json" ]]; then
+  cat <<< $(jq '.["registry-mirrors"] = "http://127.0.0.1:${port}"' /root/.docker/config.json) > /root/.docker/config.json
+else
+  cat > /root/.docker/config.json << EOF
+{
+  "registry-mirrors": ["http://127.0.0.1:${port}"]
+}
+EOF
+fi
+
+cat /root/.docker/config.json
