@@ -49,6 +49,9 @@
       "amazonec2-spot-price=${spot_price}",
       "amazonec2-block-duration-minutes=${spot_block_duration}",
       "amazonec2-tags=${tags}",
+%{ if engine_registry_mirror_enabled }
+      "engine-registry-mirror=http://ENGINE_REGISTRY_MIRROR_IP_ADDRESS:${engine_registry_mirror_port}",
+%{ endif }
 %{ for option in other_machine_options ~}
       "${option}",
 %{ endfor ~}

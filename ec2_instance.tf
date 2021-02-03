@@ -335,7 +335,7 @@ resource "aws_security_group_rule" "manager_egress" {
   description      = "Allow all egress"
 }
 
-resource "aws_security_group_rule" "manacache_s3_bucketger_ssh_from_allowed" {
+resource "aws_security_group_rule" "manager_ssh_from_allowed" {
   count = length(var.allowed_ssh_cidr_blocks)
 
   security_group_id = aws_security_group.manager.id
@@ -346,6 +346,19 @@ resource "aws_security_group_rule" "manacache_s3_bucketger_ssh_from_allowed" {
   protocol    = "tcp"
   cidr_blocks = var.allowed_ssh_cidr_blocks[count.index].cidr_blocks
   description = var.allowed_ssh_cidr_blocks[count.index].description
+}
+
+resource "aws_security_group_rule" "manager_registry_proxy_from_runners" {
+  count = var.enable_registry_proxy_for_dockerhub ? 1 : 0
+
+  security_group_id = aws_security_group.manager.id
+
+  type                     = "ingress"
+  from_port                = var.registry_proxy_port
+  to_port                  = var.registry_proxy_port
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.runners.id
+  description              = "Registry Proxy for Docker Hub (pull through cache)"
 }
 
 resource "aws_security_group_rule" "manager_metrics_from_allowed" {

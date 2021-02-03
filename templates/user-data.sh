@@ -70,6 +70,12 @@ unset HOME
 unset USER
 
 #############################################################
+# Registry Proxy for Docker Hub
+#############################################################
+
+${registry_proxy_for_dockerhub_configuration}
+
+#############################################################
 # Install and configure Gitlab Runner (+ ECR creds helper)
 #############################################################
 
@@ -81,6 +87,10 @@ mkdir -p /etc/gitlab-runner
 cat > ${gitlab_runner_config_path} <<- \EOF
 ${gitlab_runner_config_content}
 EOF
+
+%{ if registry_proxy_for_dockerhub_enabled }
+sed -i -e "s/ENGINE_REGISTRY_MIRROR_IP_ADDRESS/$(curl http://169.254.169.254/latest/meta-data/local-ipv4)/g" ${gitlab_runner_config_path}
+%{ endif }
 
 cat > ${template_config_path} <<- \EOF
 ${template_config_content}

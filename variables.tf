@@ -79,6 +79,18 @@ variable "authentication_token_ssm_param_kms_key" {
   description = "Identifier of KMS key used for encryption of SSM Parameter that will store authentication token"
 }
 
+variable "enable_registry_proxy_for_dockerhub" {
+  type        = bool
+  default     = false
+  description = "Defines whether to run and use registry proxy (pull through cache) for Docker Hub on manager instance"
+}
+
+variable "registry_proxy_port" {
+  type        = number
+  default     = 6000
+  description = "Defines port number for registry proxy (pull through cache) for Docker Hub on manager instance"
+}
+
 variable "vpc" {
   type = object({
     vpc_id     = string

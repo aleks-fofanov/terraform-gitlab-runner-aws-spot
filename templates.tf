@@ -81,8 +81,10 @@ locals {
     ebs_optimized              = var.runner_advanced_config.ebs_optimized
     enable_detailed_monitoring = var.runner_advanced_config.enable_detailed_monitoring
 
-    s3_cache_enabled = var.enable_s3_cache
-    bucket_name      = module.s3_cache_bucket.bucket_id
+    s3_cache_enabled               = var.enable_s3_cache
+    bucket_name                    = module.s3_cache_bucket.bucket_id
+    engine_registry_mirror_enabled = var.enable_registry_proxy_for_dockerhub
+    engine_registry_mirror_port    = var.registry_proxy_port
   }
   runner_template_rendered = templatefile(
     "${path.module}/templates/gitlab.runner.config.template.toml",
@@ -143,6 +145,18 @@ locals {
   )
 
   # ----------------------------------------------------------------------------
+  # Manager's Registry Proxy for Docker Hub
+  # ----------------------------------------------------------------------------
+
+  manager_registry_proxy_template_vars = {
+    port = var.registry_proxy_port
+  }
+  manager_registry_proxy_template_rendered = templatefile(
+    "${path.module}/templates/registry_proxy.sh",
+    local.manager_registry_proxy_template_vars
+  )
+
+  # ----------------------------------------------------------------------------
   # Manager's user data
   # ----------------------------------------------------------------------------
 
@@ -156,8 +170,10 @@ locals {
     template_config_content      = local.runner_template_rendered
     svc_script                   = local.manager_svc_template_rendered
 
-    logs_configuration = var.enable_cloudwatch_logs ? local.manager_logs_template_rendered : ""
-    ecr_configuration  = length(var.enable_access_to_ecr_repositories) > 0 ? local.manager_ecr_template_rendered : ""
+    logs_configuration                         = var.enable_cloudwatch_logs ? local.manager_logs_template_rendered : ""
+    ecr_configuration                          = length(var.enable_access_to_ecr_repositories) > 0 ? local.manager_ecr_template_rendered : ""
+    registry_proxy_for_dockerhub_enabled       = var.enable_registry_proxy_for_dockerhub
+    registry_proxy_for_dockerhub_configuration = var.enable_registry_proxy_for_dockerhub ? local.manager_registry_proxy_template_rendered : ""
   }
   manager_user_data_template_rendered = templatefile("${path.module}/templates/user-data.sh", local.manager_user_data_template_vars)
 }
