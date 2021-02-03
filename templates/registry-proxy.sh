@@ -16,6 +16,3 @@ else
 }
 EOF
 fi
-
-command: ["--registry-mirror", "https://mirror.gcr.io"]
-
