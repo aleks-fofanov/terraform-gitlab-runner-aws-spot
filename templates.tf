@@ -152,7 +152,7 @@ locals {
     port = var.registry_proxy_port
   }
   manager_registry_proxy_template_rendered = templatefile(
-    "${path.module}/templates/registry_proxy.sh",
+    "${path.module}/templates/registry-proxy.sh",
     local.manager_registry_proxy_template_vars
   )
 
