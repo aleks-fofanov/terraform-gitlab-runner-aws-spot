@@ -149,7 +149,8 @@ locals {
   # ----------------------------------------------------------------------------
 
   manager_registry_proxy_template_vars = {
-    port = var.registry_proxy_port
+    port                      = var.registry_proxy_port
+    gitlab_runner_config_path = local.gitlab_runner_config_path
   }
   manager_registry_proxy_template_rendered = templatefile(
     "${path.module}/templates/registry-proxy.sh",

@@ -82,11 +82,6 @@ cat > ${gitlab_runner_config_path} <<- \EOF
 ${gitlab_runner_config_content}
 EOF
 
-%{ if registry_proxy_for_dockerhub_enabled }
-sed -i -e "s/REGISTRY_MIRROR_IP_ADDRESS/$(curl http://169.254.169.254/latest/meta-data/local-ipv4)/g" ${gitlab_runner_config_path}
-%{ endif }
-cat ${gitlab_runner_config_path}
-
 cat > ${template_config_path} <<- \EOF
 ${template_config_content}
 EOF

@@ -13,7 +13,7 @@ docker run -d -p ${port}:5000 \
 mkdir -p /root/.docker/
 
 if [[ -f "/root/.docker/config.json" ]]; then
-  cat <<< $(jq '.["registry-mirrors"] = "http://127.0.0.1:${port}"' /root/.docker/config.json) > /root/.docker/config.json
+  cat <<< $(jq '.["registry-mirrors"] = ["http://127.0.0.1:${port}"]' /root/.docker/config.json) > /root/.docker/config.json
 else
   cat > /root/.docker/config.json << EOF
 {
@@ -22,4 +22,4 @@ else
 EOF
 fi
 
-cat /root/.docker/config.json
+sed -i -e "s/REGISTRY_MIRROR_IP_ADDRESS/$(curl http://169.254.169.254/latest/meta-data/local-ipv4)/g" ${gitlab_runner_config_path}
