@@ -12,7 +12,7 @@ locals {
 #############################################################
 
 module "default_label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.17.0"
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.24.1"
   attributes = var.attributes
   delimiter  = var.delimiter
   name       = var.name
@@ -24,7 +24,7 @@ module "default_label" {
 module "auth_token_ssm_param_label" {
   enabled = var.authentication_token_ssm_param != null ? false : true
 
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.17.0"
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.24.1"
   attributes = compact(concat(var.attributes, ["auth_token"]))
   delimiter  = "/"
   name       = var.name

@@ -28,7 +28,7 @@ data "aws_kms_key" "registration_token" {
 #############################################################
 
 module "manager_label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.24.1"
   attributes = compact(concat(var.attributes, ["manager"]))
   delimiter  = var.delimiter
   name       = var.name
@@ -38,7 +38,7 @@ module "manager_label" {
 }
 
 module "runner_label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.24.1"
   attributes = compact(concat(var.attributes, ["runner"]))
   delimiter  = var.delimiter
   name       = var.name
@@ -52,7 +52,7 @@ module "runner_label" {
 #############################################################
 
 module "manager_instance" {
-  source     = "git::https://github.com/cloudposse/terraform-aws-ec2-instance.git?ref=tags/0.17.0"
+  source     = "git::https://github.com/cloudposse/terraform-aws-ec2-instance.git?ref=tags/0.30.4"
   attributes = compact(concat(var.attributes, ["manager"]))
   delimiter  = var.delimiter
   name       = var.name
@@ -100,7 +100,7 @@ resource "aws_iam_role_policy_attachment" "manager" {
 }
 
 module "aggregated_policy" {
-  source = "git::https://github.com/cloudposse/terraform-aws-iam-policy-document-aggregator.git?ref=tags/0.2.0"
+  source = "git::https://github.com/cloudposse/terraform-aws-iam-policy-document-aggregator.git?ref=tags/0.8.0"
 
   source_documents = compact([
     data.aws_iam_policy_document.docker_machine.json,

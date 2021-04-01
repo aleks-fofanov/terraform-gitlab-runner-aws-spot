@@ -5,7 +5,7 @@
 module "cache_bucket_label" {
   enabled = var.enable_s3_cache
 
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.24.1"
   attributes = compact(concat(var.attributes, ["cache"]))
   delimiter  = var.delimiter
   name       = var.name
@@ -21,7 +21,7 @@ module "cache_bucket_label" {
 module "s3_cache_bucket" {
   enabled = var.enable_s3_cache
 
-  source     = "git::https://github.com/cloudposse/terraform-aws-s3-bucket.git?ref=tags/0.8.0"
+  source     = "git::https://github.com/cloudposse/terraform-aws-s3-bucket.git?ref=tags/0.32.0"
   attributes = compact(concat(var.attributes, ["cache"]))
   delimiter  = var.delimiter
   name       = var.name
