@@ -29,7 +29,6 @@ module "s3_cache_bucket" {
   stage      = var.stage
   tags       = var.tags
 
-  region             = var.region
   user_enabled       = false
   versioning_enabled = false
   force_destroy      = true
