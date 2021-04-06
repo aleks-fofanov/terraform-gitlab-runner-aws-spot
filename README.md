@@ -7,7 +7,8 @@ Terraform module to provision self-hosted autoscaling Gitlab runner on AWS spot 
 
 ### Terraform versions
 
-Terraform 0.12. Pin module version to `~> 1.0`. Submit pull-requests to `master` branch.
+Terraform 0.12. Pin module version to `~> 1.0`. Submit pull-requests to `terraform012` branch.
+Terraform 0.13. Pin module version to `~> 2.0`. Submit pull-requests to `master` branch.
 
 
 ---
@@ -142,7 +143,7 @@ module "gitlab_runner" {
   manager = {
     ami_id                      = data.aws_ami.amzn_linux_2.id
     ami_owner                   = "amazon"
-    instance_type               = "t3.micro"
+    instance_type               = "t3a.micro"
     key_pair                    = null
     subnet_id                   = "subnet-XXXXXXXX"
     associate_public_ip_address = true
@@ -156,9 +157,9 @@ module "gitlab_runner" {
     concurent = 2
     limit     = 2
     tags      = ["shared", "docker", "spot", "us-west-2d"]
-    image     = "docker:19.03.8"
+    image     = "docker:20.10"
 
-    instance_type       = "c5.large"
+    instance_type       = "c5a.large"
     ami_id              = data.aws_ami.ubuntu_18_04.id
     use_private_address = true
 
@@ -208,15 +209,14 @@ For more examples please refer to the `example` folder in this repo.
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.0 |
-| <a name="provider_null"></a> [null](#provider\_null) | >= 3.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_aggregated_policy"></a> [aggregated\_policy](#module\_aggregated\_policy) | cloudposse/iam-policy-document-aggregator/aws | 0.8.0 |
-| <a name="module_auth_token_ssm_param_label"></a> [auth\_token\_ssm\_param\_label](#module\_auth\_token\_ssm\_param\_label) | git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.24.1 |  |
-| <a name="module_default_label"></a> [default\_label](#module\_default\_label) | git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.24.1 |  |
+| <a name="module_auth_token_ssm_param_label"></a> [auth\_token\_ssm\_param\_label](#module\_auth\_token\_ssm\_param\_label) | cloudposse/label/null | 0.24.1 |
+| <a name="module_default_label"></a> [default\_label](#module\_default\_label) | cloudposse/label/null | 0.24.1 |
 | <a name="module_manager_instance"></a> [manager\_instance](#module\_manager\_instance) | cloudposse/ec2-instance/aws | 0.30.4 |
 | <a name="module_manager_label"></a> [manager\_label](#module\_manager\_label) | cloudposse/label/null | 0.24.1 |
 | <a name="module_runner_label"></a> [runner\_label](#module\_runner\_label) | cloudposse/label/null | 0.24.1 |
@@ -246,7 +246,6 @@ For more examples please refer to the `example` folder in this repo.
 | [aws_security_group_rule.runners_icmp_from_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.runners_ssh_from_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_ssm_parameter.authentication_token](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_parameter) | resource |
-| [null_resource.unregister_runner](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [aws_availability_zone.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zone) | data source |
 | [aws_caller_identity.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.authentication_token_kms_permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |

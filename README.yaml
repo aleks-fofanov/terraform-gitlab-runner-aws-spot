@@ -40,7 +40,8 @@ description: |-
 
   ### Terraform versions
 
-  Terraform 0.12. Pin module version to `~> 1.0`. Submit pull-requests to `master` branch.
+  Terraform 0.12. Pin module version to `~> 1.0`. Submit pull-requests to `terraform012` branch.
+  Terraform 0.13. Pin module version to `~> 2.0`. Submit pull-requests to `master` branch.
 
 introduction: |-
   This module provisions a self-hosted Gitlab runner with
@@ -155,7 +156,7 @@ usage: |-
     manager = {
       ami_id                      = data.aws_ami.amzn_linux_2.id
       ami_owner                   = "amazon"
-      instance_type               = "t3.micro"
+      instance_type               = "t3a.micro"
       key_pair                    = null
       subnet_id                   = "subnet-XXXXXXXX"
       associate_public_ip_address = true
@@ -169,9 +170,9 @@ usage: |-
       concurent = 2
       limit     = 2
       tags      = ["shared", "docker", "spot", "us-west-2d"]
-      image     = "docker:19.03.8"
+      image     = "docker:20.10"
 
-      instance_type       = "c5.large"
+      instance_type       = "c5a.large"
       ami_id              = data.aws_ami.ubuntu_18_04.id
       use_private_address = true
 
