@@ -12,7 +12,9 @@ locals {
 #############################################################
 
 module "default_label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.24.1"
+  source  = "cloudposse/label/null"
+  version = "0.24.1"
+
   attributes = var.attributes
   delimiter  = var.delimiter
   name       = var.name
@@ -24,13 +26,12 @@ module "default_label" {
 module "auth_token_ssm_param_label" {
   enabled = var.authentication_token_ssm_param != null ? false : true
 
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.24.1"
+  source  = "cloudposse/label/null"
+  version = "0.24.1"
+
+  context    = module.default_label.context
   attributes = compact(concat(var.attributes, ["auth_token"]))
   delimiter  = "/"
-  name       = var.name
-  namespace  = var.namespace
-  stage      = var.stage
-  tags       = var.tags
 }
 
 #############################################################
@@ -74,23 +75,6 @@ resource "aws_ssm_parameter" "authentication_token" {
 
   lifecycle {
     ignore_changes = [value]
-  }
-}
-
-resource "null_resource" "unregister_runner" {
-  triggers = {
-    script             = "${path.module}/scripts/unregister-runner.sh"
-    aws_region         = var.region
-    runners_gitlab_url = var.gitlab_url
-    ssm_param_name     = aws_ssm_parameter.authentication_token.name
-    instance_id        = module.manager_instance.id
-  }
-
-  provisioner "local-exec" {
-    when        = destroy
-    on_failure  = continue
-    interpreter = ["/bin/bash", "-c"]
-    command     = "${self.triggers.script} -p ${self.triggers.ssm_param_name} -r ${self.triggers.aws_region} -u ${self.triggers.runners_gitlab_url}"
   }
 }
 
