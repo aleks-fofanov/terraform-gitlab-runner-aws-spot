@@ -6,7 +6,7 @@
 # https://docs.gitlab.com/runner/faq/#where-are-logs-stored-when-run-as-a-service
 
 yum update -y
-yum install -y awslogs amazon-cloudwatch-agent
+yum install -y awslogs amazon-cloudwatch-agent aws-cli-plugin-cloudwatch-logs
 
 cat > /etc/awslogs/awslogs.conf <<- EOF
 [general]
