@@ -51,7 +51,7 @@ systemctl start docker
 # https://gitlab.com/gitlab-org/ci-cd/docker-machine/issues/4
 # https://docs.gitlab.com/runner/executors/docker_machine.html#install
 
-curl -fL https://gitlab-docker-machine-downloads.s3.amazonaws.com/v${docker_machine_version}/docker-machine-Linux-x86_64
+curl -fL https://gitlab-docker-machine-downloads.s3.amazonaws.com/v${docker_machine_version}/docker-machine-Linux-x86_64 \
     -o /usr/local/bin/docker-machine
 chmod +x /usr/local/bin/docker-machine
 ln -s /usr/local/bin/docker-machine /usr/bin/docker-machine
