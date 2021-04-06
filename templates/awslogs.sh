@@ -6,7 +6,7 @@
 # https://docs.gitlab.com/runner/faq/#where-are-logs-stored-when-run-as-a-service
 
 yum update -y
-yum install -y awslogs amazon-cloudwatch-agent aws-cli-plugin-cloudwatch-logs
+yum install -y awslogs amazon-cloudwatch-agent
 
 cat > /etc/awslogs/awslogs.conf <<- EOF
 [general]
@@ -47,10 +47,14 @@ initial_position = start_of_file
 
 EOF
 
-REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
+# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html
+
+TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"`
+
+REGION=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -fs 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
 sed -i -e "s/region = us-east-1/region = $REGION/g" /etc/awslogs/awscli.conf
 
-INSTANCE_ID=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .instanceId)
+INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -fs 169.254.169.254/latest/dynamic/instance-identity/document | jq -r .instanceId)
 sed -i -e "s/{InstanceId}/$INSTANCE_ID/g" /etc/awslogs/awslogs.conf
 
 systemctl enable awslogsd.service
