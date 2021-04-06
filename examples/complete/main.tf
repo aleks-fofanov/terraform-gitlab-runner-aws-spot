@@ -3,7 +3,7 @@
 #############################################################
 
 provider "aws" {
-  version = "~> 3.14"
+  version = "~> 2.17"
   region  = var.aws_region
 }
 
@@ -30,7 +30,7 @@ module "runner" {
   stage      = var.stage
   tags       = var.tags
 
-  gitlab_runner_version = "13.9.0"
+  gitlab_runner_version = "13.2.0"
 
   region            = data.aws_region.current.name
   availability_zone = var.aws_az
@@ -51,7 +51,7 @@ module "runner" {
   }
 
   manager = {
-    ami_id                      = "ami-0518bb0e75d3619ca"
+    ami_id                      = "ami-0d6621c01e8c2de2c"
     ami_owner                   = "amazon"
     instance_type               = "t3a.micro"
     key_pair                    = null
@@ -67,10 +67,10 @@ module "runner" {
     concurrent = 2
     limit      = 2
     tags       = ["shared", "docker", "spot", join("", [data.aws_region.current.name, var.aws_az])]
-    image      = "docker:20.10"
+    image      = "docker:19.03.8"
 
     instance_type       = "c5.large"
-    ami_id              = "ami-007e276c37b5ff2d7"
+    ami_id              = "ami-003634241a8fcdec0"
     use_private_address = true
 
     spot_bid_price         = 0.11

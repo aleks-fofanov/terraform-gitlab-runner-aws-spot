@@ -177,13 +177,13 @@ variable "runner_advanced_config" {
 }
 
 variable "docker_machine_version" {
-  default     = "0.16.2-gitlab.11"
+  default     = "0.16.2-gitlab.2"
   type        = string
   description = "Docker machine version to be installed on manager instance"
 }
 
 variable "gitlab_runner_version" {
-  default     = "13.10.0"
+  default     = "13.2.0"
   type        = string
   description = "Gitlab runner version to be installed on manager instance"
 }

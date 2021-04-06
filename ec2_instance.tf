@@ -28,19 +28,23 @@ data "aws_kms_key" "registration_token" {
 #############################################################
 
 module "manager_label" {
-  source  = "cloudposse/label/null"
-  version = "0.24.1"
-
-  context    = module.default_label.context
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.24.1"
   attributes = compact(concat(var.attributes, ["manager"]))
+  delimiter  = var.delimiter
+  name       = var.name
+  namespace  = var.namespace
+  stage      = var.stage
+  tags       = var.tags
 }
 
 module "runner_label" {
-  source  = "cloudposse/label/null"
-  version = "0.24.1"
-
-  context    = module.default_label.context
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.24.1"
   attributes = compact(concat(var.attributes, ["runner"]))
+  delimiter  = var.delimiter
+  name       = var.name
+  namespace  = var.namespace
+  stage      = var.stage
+  tags       = var.tags
 }
 
 #############################################################
@@ -48,9 +52,7 @@ module "runner_label" {
 #############################################################
 
 module "manager_instance" {
-  source  = "cloudposse/ec2-instance/aws"
-  version = "0.30.4"
-
+  source     = "git::https://github.com/cloudposse/terraform-aws-ec2-instance.git?ref=tags/0.30.4"
   attributes = compact(concat(var.attributes, ["manager"]))
   delimiter  = var.delimiter
   name       = var.name
@@ -98,8 +100,7 @@ resource "aws_iam_role_policy_attachment" "manager" {
 }
 
 module "aggregated_policy" {
-  source  = "cloudposse/iam-policy-document-aggregator/aws"
-  version = "0.8.0"
+  source = "git::https://github.com/cloudposse/terraform-aws-iam-policy-document-aggregator.git?ref=tags/0.8.0"
 
   source_documents = compact([
     data.aws_iam_policy_document.docker_machine.json,
@@ -157,12 +158,13 @@ data "aws_iam_policy_document" "docker_machine" {
 data "aws_iam_policy_document" "create_service_linked_roles" {
   count = var.create_service_linked_roles ? 0 : 1
 
+
   statement {
     effect = "Allow"
     actions = [
       "iam:CreateServiceLinkedRole"
     ]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.default.account_id}:role/aws-service-role/*"]
+    resources = ["arn:aws:iam::*:role/aws-service-role/*"]
   }
 }
 

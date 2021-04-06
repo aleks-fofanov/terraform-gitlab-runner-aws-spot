@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-export TERRAFORM_VERSION=0.13.6
+export TERRAFORM_VERSION=0.12.19
 
 -include $(shell curl -sSL -o .build-harness "https://git.io/build-harness"; echo .build-harness)
 

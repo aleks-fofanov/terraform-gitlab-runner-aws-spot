@@ -1,15 +1,33 @@
 #############################################################
+# Labels
+#############################################################
+
+module "cache_bucket_label" {
+  enabled = var.enable_s3_cache
+
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.24.1"
+  attributes = compact(concat(var.attributes, ["cache"]))
+  delimiter  = var.delimiter
+  name       = var.name
+  namespace  = var.namespace
+  stage      = var.stage
+  tags       = var.tags
+}
+
+#############################################################
 # S3 Buckets
 #############################################################
 
 module "s3_cache_bucket" {
   enabled = var.enable_s3_cache
 
-  source  = "cloudposse/s3-bucket/aws"
-  version = "0.33.0"
-
-  context    = module.default_label.context
+  source     = "git::https://github.com/cloudposse/terraform-aws-s3-bucket.git?ref=tags/0.32.0"
   attributes = compact(concat(var.attributes, ["cache"]))
+  delimiter  = var.delimiter
+  name       = var.name
+  namespace  = var.namespace
+  stage      = var.stage
+  tags       = var.tags
 
   user_enabled       = false
   versioning_enabled = false
