@@ -39,11 +39,10 @@ module "auth_token_ssm_param_label" {
 #############################################################
 
 data "aws_region" "default" {
-  name = var.region
 }
 
 data "aws_availability_zone" "default" {
-  name  = "${var.region}${var.availability_zone}"
+  name  = "${data.aws_region.default.name}${var.availability_zone}"
   state = "available"
 }
 
@@ -79,17 +78,17 @@ resource "aws_ssm_parameter" "authentication_token" {
 }
 
 #############################################################
-# Service-linked Roles
+# Service-Linked Roles
 #############################################################
 
 resource "aws_iam_service_linked_role" "spot" {
-  count = var.create_service_linked_roles ? 1 : 0
+  count = var.create_spot_service_linked_role ? 1 : 0
 
   aws_service_name = "spot.amazonaws.com"
 }
 
 resource "aws_iam_service_linked_role" "autoscaling" {
-  count = var.create_service_linked_roles ? 1 : 0
+  count = var.create_autoscaling_service_linked_role ? 1 : 0
 
   aws_service_name = "autoscaling.amazonaws.com"
 }

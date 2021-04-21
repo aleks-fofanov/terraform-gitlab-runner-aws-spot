@@ -3,8 +3,7 @@
 #############################################################
 
 provider "aws" {
-  version = "~> 3.14"
-  region  = var.aws_region
+  region = var.aws_region
 }
 
 #############################################################
@@ -22,7 +21,9 @@ data "aws_availability_zones" "aws_availability_zones" {
 #############################################################
 
 module "runner" {
-  source     = "git::https://github.com/aleks-fofanov/terraform-gitlab-runner-aws-spot.git?ref=tags/1.1.0"
+  source  = "aleks-fofanov/runner-aws-spot/gitlab"
+  version = "~> 2.0"
+
   attributes = var.attributes
   delimiter  = var.delimiter
   name       = var.name
@@ -30,7 +31,7 @@ module "runner" {
   stage      = var.stage
   tags       = var.tags
 
-  gitlab_runner_version = "13.9.0"
+  gitlab_runner_version = "13.10.0"
 
   region            = data.aws_region.current.name
   availability_zone = var.aws_az
