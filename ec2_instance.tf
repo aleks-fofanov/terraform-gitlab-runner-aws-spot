@@ -61,7 +61,6 @@ module "manager_instance" {
   security_groups               = compact(concat([aws_security_group.manager.id], var.additional_security_groups))
   create_default_security_group = false
 
-  region                      = var.region
   vpc_id                      = var.vpc.vpc_id
   subnet                      = var.manager.subnet_id
   availability_zone           = data.aws_availability_zone.default.name
@@ -114,8 +113,8 @@ module "aggregated_policy" {
   ])
 }
 
-// TODO: create proper minimal IAM policy for docker machine
-// https://github.com/docker/machine/issues/1655
+# TODO: create proper minimal IAM policy for docker machine
+# https://github.com/docker/machine/issues/1655
 
 data "aws_iam_policy_document" "docker_machine" {
   statement {
@@ -155,14 +154,14 @@ data "aws_iam_policy_document" "docker_machine" {
 }
 
 data "aws_iam_policy_document" "create_service_linked_roles" {
-  count = var.create_service_linked_roles ? 0 : 1
+  count = var.create_spot_service_linked_role && var.create_autoscaling_service_linked_role ? 0 : 1
 
   statement {
     effect = "Allow"
     actions = [
       "iam:CreateServiceLinkedRole"
     ]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.default.account_id}:role/aws-service-role/*"]
+    resources = ["arn:${data.aws_partition.default.partition}:iam::${data.aws_caller_identity.default.account_id}:role/aws-service-role/*"]
   }
 }
 
@@ -275,14 +274,14 @@ resource "aws_iam_role_policy_attachment" "manager_ssm_sessions" {
   count = var.enable_ssm_sessions ? 1 : 0
 
   role       = module.manager_instance.role
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  policy_arn = "arn:${data.aws_partition.default.partition}:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_iam_role_policy_attachment" "manager_cloudwatch_logs" {
   count = var.enable_cloudwatch_logs ? 1 : 0
 
   role       = module.manager_instance.role
-  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+  policy_arn = "arn:${data.aws_partition.default.partition}:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
 data "aws_iam_policy_document" "runner_assume" {
@@ -328,9 +327,9 @@ resource "aws_security_group_rule" "manager_egress" {
   from_port        = 0
   to_port          = 0
   protocol         = "-1"
-  cidr_blocks      = ["0.0.0.0/0"]
+  cidr_blocks      = ["0.0.0.0/0"] #tfsec:ignore:AWS007
   ipv6_cidr_blocks = ["::/0"]
-  description      = "Allow all egress"
+  description      = "Allow all egress traffic"
 }
 
 resource "aws_security_group_rule" "manacache_s3_bucketger_ssh_from_allowed" {
@@ -343,7 +342,7 @@ resource "aws_security_group_rule" "manacache_s3_bucketger_ssh_from_allowed" {
   to_port     = 22
   protocol    = "tcp"
   cidr_blocks = var.allowed_ssh_cidr_blocks[count.index].cidr_blocks
-  description = var.allowed_ssh_cidr_blocks[count.index].description
+  description = var.allowed_ssh_cidr_blocks[count.index].description #tfsec:ignore:AWS018
 }
 
 resource "aws_security_group_rule" "manager_metrics_from_allowed" {
@@ -356,7 +355,7 @@ resource "aws_security_group_rule" "manager_metrics_from_allowed" {
   to_port     = var.metrics_port
   protocol    = "tcp"
   cidr_blocks = var.allowed_metrics_cidr_blocks[count.index].cidr_blocks
-  description = var.allowed_metrics_cidr_blocks[count.index].description
+  description = var.allowed_metrics_cidr_blocks[count.index].description #tfsec:ignore:AWS018
 }
 
 resource "aws_security_group" "runners" {
@@ -374,7 +373,7 @@ resource "aws_security_group_rule" "runners_egress" {
   from_port        = 0
   to_port          = 0
   protocol         = "-1"
-  cidr_blocks      = ["0.0.0.0/0"]
+  cidr_blocks      = ["0.0.0.0/0"] #tfsec:ignore:AWS007
   ipv6_cidr_blocks = ["::/0"]
   description      = "Allow all egress"
 }

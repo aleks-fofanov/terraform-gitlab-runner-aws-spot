@@ -33,10 +33,6 @@ variable "tags" {
   description = "Additional tags (e.g. `map(`BusinessUnit`,`XYZ`)"
 }
 
-variable "region" {
-  description = "AWS Region identifier for instances to be launched in"
-}
-
 variable "availability_zone" {
   type        = string
   description = "Availability Zone (e.g. `a`, `b`, `c` etc.) for instances to be launched in"
@@ -188,10 +184,16 @@ variable "gitlab_runner_version" {
   description = "Gitlab runner version to be installed on manager instance"
 }
 
-variable "create_service_linked_roles" {
+variable "create_spot_service_linked_role" {
   default     = true
   type        = bool
-  description = "Defines whether required service-linked roles should be created"
+  description = "Defines whether to create service-linked role for EC2 spot instances"
+}
+
+variable "create_autoscaling_service_linked_role" {
+  default     = true
+  type        = bool
+  description = "Defines whether to create service-linked role for EC2 autoscaling"
 }
 
 variable "enable_cloudwatch_logs" {

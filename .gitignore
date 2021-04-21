@@ -33,6 +33,3 @@ override.tf.json
 .idea/
 **/generated/
 !**/generated/.gitkeep
-
-.build-harness
-build-harness
