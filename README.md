@@ -110,17 +110,16 @@ module "gitlab_runner" {
   name      = "stack"
   namespace = "cp"
   stage     = "prod"
-
-  region            = "us-west-2"
-  availability_zone = "d"
-
+  
   registration_token = "XXXXXXXX"
+
+  availability_zone = "d"
 
   vpc = {
     vpc_id     = "XXXXXXXX"
     cidr_block = "10.0.0.0/16"
   }
-
+  
   manager = {
     ami_id                      = data.aws_ami.amzn_linux_2.id
     ami_owner                   = "amazon"
