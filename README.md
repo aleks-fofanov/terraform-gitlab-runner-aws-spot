@@ -167,7 +167,7 @@ module "gitlab_runner" {
 }
 ```
 
-Please refer to the `example` folder for complete example.
+Please refer to the `examples` folder for a complete example.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
