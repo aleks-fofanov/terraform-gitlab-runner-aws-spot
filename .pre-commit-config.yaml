@@ -14,6 +14,7 @@ repos:
         args:
           - '--args=--exclude-downloaded-modules --concise-output'
         require_serial: true
+        exclude: ^examples/
   - repo: git://github.com/pre-commit/pre-commit-hooks
     rev: v3.4.0
     hooks:

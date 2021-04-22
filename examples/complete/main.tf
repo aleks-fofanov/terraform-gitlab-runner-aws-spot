@@ -33,7 +33,6 @@ module "runner" {
 
   gitlab_runner_version = "13.10.0"
 
-  region            = data.aws_region.current.name
   availability_zone = var.aws_az
 
   registration_token_ssm_param         = "/tf/${var.name}/${var.stage}/registration_token"
@@ -42,9 +41,10 @@ module "runner" {
   authentication_token_ssm_param         = "/tf/${var.name}/${var.stage}/authentication_token"
   authentication_token_ssm_param_kms_key = "alias/aws/ssm"
 
-  create_service_linked_roles = false
-  enable_ssm_sessions         = true
-  enable_s3_cache             = true
+  create_spot_service_linked_role        = true
+  create_autoscaling_service_linked_role = true
+  enable_ssm_sessions                    = true
+  enable_s3_cache                        = true
 
   vpc = {
     vpc_id     = module.vpc.vpc_id
