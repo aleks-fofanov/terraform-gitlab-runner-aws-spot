@@ -1,5 +1,4 @@
 # AWS Gitlab Runner Terraform module
----
 
 ## Introduction
 
@@ -72,7 +71,6 @@ This module is backed by best of breed terraform modules maintained by [Cloudpos
 
 Terraform 0.12. Pin module version to `~> 1.0`. Submit pull-requests to `terraform012` branch.
 
-
 Terraform 0.13. Pin module version to `~> 2.0`. Submit pull-requests to `master` branch.
 
 ## Usage
@@ -106,7 +104,9 @@ data "aws_ami" "ubuntu_18_04" {
 }
 
 module "gitlab_runner" {
-  source    = "git::https://github.com/aleks-fofanov/terraform-gitlab-runner-aws-spot.git?ref=master"
+  source  = "aleks-fofanov/runner-aws-spot/gitlab"
+  version = "~> 2.0"
+  
   name      = "stack"
   namespace = "cp"
   stage     = "prod"
