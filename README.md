@@ -13,7 +13,7 @@ installed and automatically registers itself with Gitlab. It spawns worker insta
 doesn't run any jobs itself.
 
 **Features**:
-- Allows to use both spot and regular on-demand EC2 instances for worker instance which run CI/CD jobs
+- Allows to use both spot and regular on-demand EC2 instances for workers instance which run CI/CD jobs
 - [Registration token](https://docs.gitlab.com/ee/api/runners.html#registration-and-authentication-tokens)
   can be passed to the module directly via variable or parameter in `SSM Parameter Store` (**Recommended!**)
 - [Authentication token](https://docs.gitlab.com/ee/api/runners.html#registration-and-authentication-tokens)
@@ -46,9 +46,15 @@ doesn't run any jobs itself.
   for your infrastructure may also be a wise choice
 
 **Cost optimization recommendations**:
-- Consider purchasing `Savings Plan` or `Reserved request_spot_instances = trueInstance` for manager instance
+- Consider purchasing `Savings Plan` or `Reserved Instance` for manager instance
 - Consider using AMD-powered EC2 instance types for manager instance (they are 10% cheaper compared to the
   Intel-powered instances at the moment of this writing)
+- Spot Instances with a defined duration (also known as Spot blocks) are no longer available to new AWS customers from 
+  July 1, 2021. For customers who have previously used the feature, AWS will continue to support Spot Instances with a 
+  defined duration until December 31, 2022
+  [deprecation notice](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-requests.html#fixed-duration-spot-instances).
+  **If you don't need Spot Instances with a defined duration**, please set `spot_block_duration` parameter to 0 in the
+  `runner` config object.
 
 **Other recommendations**:
 - If you use distributed cache feature, consider provisioning
@@ -212,9 +218,9 @@ Please refer to the `examples` folder for a complete example.
 | [aws_s3_bucket_public_access_block.cache](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
 | [aws_security_group.manager](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group.runners](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
-| [aws_security_group_rule.manacache_s3_bucketger_ssh_from_allowed](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.manager_egress](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.manager_metrics_from_allowed](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.manager_ssh_from_allowed](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.runners_docker_machine_from_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.runners_egress](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.runners_icmp_from_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |

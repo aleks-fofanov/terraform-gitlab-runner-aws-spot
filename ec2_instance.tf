@@ -161,7 +161,8 @@ data "aws_iam_policy_document" "create_service_linked_roles" {
     actions = [
       "iam:CreateServiceLinkedRole"
     ]
-    resources = ["arn:${data.aws_partition.default.partition}:iam::${data.aws_caller_identity.default.account_id}:role/aws-service-role/*"]
+    resources = [
+    "arn:${data.aws_partition.default.partition}:iam::${data.aws_caller_identity.default.account_id}:role/aws-service-role/*"]
   }
 }
 
@@ -332,7 +333,7 @@ resource "aws_security_group_rule" "manager_egress" {
   description      = "Allow all egress traffic"
 }
 
-resource "aws_security_group_rule" "manacache_s3_bucketger_ssh_from_allowed" {
+resource "aws_security_group_rule" "manager_ssh_from_allowed" {
   count = length(var.allowed_ssh_cidr_blocks)
 
   security_group_id = aws_security_group.manager.id
