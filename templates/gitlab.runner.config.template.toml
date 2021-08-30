@@ -47,7 +47,9 @@
       "amazonec2-monitoring=${enable_detailed_monitoring}",
       "amazonec2-request-spot-instance=${request_spot_instances}",
       "amazonec2-spot-price=${spot_price}",
+%{ if spot_block_duration != 0 }
       "amazonec2-block-duration-minutes=${spot_block_duration}",
+%{ endif }
       "amazonec2-tags=${tags}",
 %{ for option in other_machine_options ~}
       "${option}",

@@ -75,7 +75,7 @@ module "runner" {
     use_private_address = true
 
     spot_bid_price         = 0.11
-    spot_block_duration    = 60
+    spot_block_duration    = 0
     request_spot_instances = true
 
     run_untagged    = false
