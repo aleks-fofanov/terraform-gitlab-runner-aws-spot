@@ -29,7 +29,7 @@ data "aws_kms_key" "registration_token" {
 
 module "manager_label" {
   source  = "cloudposse/label/null"
-  version = "0.24.1"
+  version = "0.25.0"
 
   context    = module.default_label.context
   attributes = compact(concat(var.attributes, ["manager"]))
@@ -37,7 +37,7 @@ module "manager_label" {
 
 module "runner_label" {
   source  = "cloudposse/label/null"
-  version = "0.24.1"
+  version = "0.25.0"
 
   context    = module.default_label.context
   attributes = compact(concat(var.attributes, ["runner"]))
@@ -78,6 +78,10 @@ module "manager_instance" {
   ebs_optimized    = var.manager.ebs_optimized
 
   user_data = local.manager_user_data_template_rendered
+
+  metadata_http_endpoint_enabled       = var.manager.metadata_http_endpoint_enabled
+  metadata_http_put_response_hop_limit = var.manager.metadata_http_put_response_hop_limit
+  metadata_http_tokens_required        = var.manager.metadata_http_tokens_required
 }
 
 #############################################################
@@ -329,7 +333,7 @@ resource "aws_security_group_rule" "manager_egress" {
   to_port          = 0
   protocol         = "-1"
   cidr_blocks      = ["0.0.0.0/0"] #tfsec:ignore:AWS007
-  ipv6_cidr_blocks = ["::/0"]
+  ipv6_cidr_blocks = ["::/0"]      #tfsec:ignore:AWS007
   description      = "Allow all egress traffic"
 }
 
@@ -375,7 +379,7 @@ resource "aws_security_group_rule" "runners_egress" {
   to_port          = 0
   protocol         = "-1"
   cidr_blocks      = ["0.0.0.0/0"] #tfsec:ignore:AWS007
-  ipv6_cidr_blocks = ["::/0"]
+  ipv6_cidr_blocks = ["::/0"]      #tfsec:ignore:AWS007
   description      = "Allow all egress"
 }
 
