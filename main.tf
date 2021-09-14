@@ -3,7 +3,9 @@
 #############################################################
 
 locals {
-  authentication_token_ssm_param                  = var.authentication_token_ssm_param != null ? var.authentication_token_ssm_param : "/${module.auth_token_ssm_param_label.id}"
+  #tfsec:ignore:GEN002
+  authentication_token_ssm_param = var.authentication_token_ssm_param != null ? var.authentication_token_ssm_param : "/${module.auth_token_ssm_param_label.id}"
+  #tfsec:ignore:GEN002
   authentication_token_ssm_param_kms_key_provided = var.authentication_token_ssm_param_kms_key != null ? true : false
 }
 
@@ -13,7 +15,7 @@ locals {
 
 module "default_label" {
   source  = "cloudposse/label/null"
-  version = "0.24.1"
+  version = "0.25.0"
 
   attributes = var.attributes
   delimiter  = var.delimiter
@@ -27,7 +29,7 @@ module "auth_token_ssm_param_label" {
   enabled = var.authentication_token_ssm_param != null ? false : true
 
   source  = "cloudposse/label/null"
-  version = "0.24.1"
+  version = "0.25.0"
 
   context    = module.default_label.context
   attributes = compact(concat(var.attributes, ["auth_token"]))

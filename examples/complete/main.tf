@@ -52,16 +52,19 @@ module "runner" {
   }
 
   manager = {
-    ami_id                      = "ami-0518bb0e75d3619ca"
-    ami_owner                   = "amazon"
-    instance_type               = "t3a.micro"
-    key_pair                    = null
-    subnet_id                   = lookup(module.subnets.az_subnet_ids, join("", [data.aws_region.current.name, var.aws_az]))
-    associate_public_ip_address = true
-    assign_eip_address          = false
-    enable_detailed_monitoring  = false
-    root_volume_size            = 8
-    ebs_optimized               = false
+    ami_id                               = "ami-0518bb0e75d3619ca"
+    ami_owner                            = "amazon"
+    instance_type                        = "t3a.micro"
+    key_pair                             = null
+    subnet_id                            = lookup(module.subnets.az_subnet_ids, join("", [data.aws_region.current.name, var.aws_az]))
+    associate_public_ip_address          = true
+    assign_eip_address                   = false
+    enable_detailed_monitoring           = false
+    root_volume_size                     = 8
+    ebs_optimized                        = false
+    metadata_http_endpoint_enabled       = true
+    metadata_http_put_response_hop_limit = 2
+    metadata_http_tokens_required        = true
   }
 
   runner = {

@@ -86,16 +86,19 @@ variable "vpc" {
 variable "manager" {
   description = "Runners' manager (aka bastion) configuration"
   type = object({
-    ami_id                      = string
-    ami_owner                   = string
-    instance_type               = string
-    key_pair                    = string
-    subnet_id                   = string
-    associate_public_ip_address = bool
-    assign_eip_address          = bool
-    root_volume_size            = number
-    ebs_optimized               = bool
-    enable_detailed_monitoring  = bool
+    ami_id                               = string
+    ami_owner                            = string
+    instance_type                        = string
+    key_pair                             = string
+    subnet_id                            = string
+    associate_public_ip_address          = bool
+    assign_eip_address                   = bool
+    root_volume_size                     = number
+    ebs_optimized                        = bool
+    enable_detailed_monitoring           = bool
+    metadata_http_endpoint_enabled       = bool
+    metadata_http_put_response_hop_limit = number
+    metadata_http_tokens_required        = bool
   })
 }
 
@@ -173,13 +176,13 @@ variable "runner_advanced_config" {
 }
 
 variable "docker_machine_version" {
-  default     = "0.16.2-gitlab.11"
+  default     = "0.16.2-gitlab.13"
   type        = string
   description = "Docker machine version to be installed on manager instance"
 }
 
 variable "gitlab_runner_version" {
-  default     = "13.10.0"
+  default     = "14.2.0"
   type        = string
   description = "Gitlab runner version to be installed on manager instance"
 }

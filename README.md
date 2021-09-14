@@ -195,11 +195,11 @@ Please refer to the `examples` folder for a complete example.
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_aggregated_policy"></a> [aggregated\_policy](#module\_aggregated\_policy) | cloudposse/iam-policy-document-aggregator/aws | 0.8.0 |
-| <a name="module_auth_token_ssm_param_label"></a> [auth\_token\_ssm\_param\_label](#module\_auth\_token\_ssm\_param\_label) | cloudposse/label/null | 0.24.1 |
-| <a name="module_default_label"></a> [default\_label](#module\_default\_label) | cloudposse/label/null | 0.24.1 |
+| <a name="module_auth_token_ssm_param_label"></a> [auth\_token\_ssm\_param\_label](#module\_auth\_token\_ssm\_param\_label) | cloudposse/label/null | 0.25.0 |
+| <a name="module_default_label"></a> [default\_label](#module\_default\_label) | cloudposse/label/null | 0.25.0 |
 | <a name="module_manager_instance"></a> [manager\_instance](#module\_manager\_instance) | cloudposse/ec2-instance/aws | 0.30.4 |
-| <a name="module_manager_label"></a> [manager\_label](#module\_manager\_label) | cloudposse/label/null | 0.24.1 |
-| <a name="module_runner_label"></a> [runner\_label](#module\_runner\_label) | cloudposse/label/null | 0.24.1 |
+| <a name="module_manager_label"></a> [manager\_label](#module\_manager\_label) | cloudposse/label/null | 0.25.0 |
+| <a name="module_runner_label"></a> [runner\_label](#module\_runner\_label) | cloudposse/label/null | 0.25.0 |
 | <a name="module_s3_cache_bucket"></a> [s3\_cache\_bucket](#module\_s3\_cache\_bucket) | cloudposse/s3-bucket/aws | 0.33.0 |
 
 ## Resources
@@ -260,14 +260,14 @@ Please refer to the `examples` folder for a complete example.
 | <a name="input_create_autoscaling_service_linked_role"></a> [create\_autoscaling\_service\_linked\_role](#input\_create\_autoscaling\_service\_linked\_role) | Defines whether to create service-linked role for EC2 autoscaling | `bool` | `true` | no |
 | <a name="input_create_spot_service_linked_role"></a> [create\_spot\_service\_linked\_role](#input\_create\_spot\_service\_linked\_role) | Defines whether to create service-linked role for EC2 spot instances | `bool` | `true` | no |
 | <a name="input_delimiter"></a> [delimiter](#input\_delimiter) | Delimiter to be used between `namespace`, `name`, `stage` and `attributes` | `string` | `"-"` | no |
-| <a name="input_docker_machine_version"></a> [docker\_machine\_version](#input\_docker\_machine\_version) | Docker machine version to be installed on manager instance | `string` | `"0.16.2-gitlab.11"` | no |
+| <a name="input_docker_machine_version"></a> [docker\_machine\_version](#input\_docker\_machine\_version) | Docker machine version to be installed on manager instance | `string` | `"0.16.2-gitlab.13"` | no |
 | <a name="input_enable_access_to_ecr_repositories"></a> [enable\_access\_to\_ecr\_repositories](#input\_enable\_access\_to\_ecr\_repositories) | A list of ECR repositories in specified `region` that manager instance should have read-only access to | `list(string)` | `[]` | no |
 | <a name="input_enable_cloudwatch_logs"></a> [enable\_cloudwatch\_logs](#input\_enable\_cloudwatch\_logs) | Defines whether manager instance should ship its logs to Cloudwatch | `bool` | `true` | no |
 | <a name="input_enable_s3_cache"></a> [enable\_s3\_cache](#input\_enable\_s3\_cache) | Defines whether s3 should be created and used as a source for distributed cache | `bool` | `true` | no |
 | <a name="input_enable_ssm_sessions"></a> [enable\_ssm\_sessions](#input\_enable\_ssm\_sessions) | Defines whether access via SSM Session Manager should be enabled for manager instance | `bool` | `true` | no |
-| <a name="input_gitlab_runner_version"></a> [gitlab\_runner\_version](#input\_gitlab\_runner\_version) | Gitlab runner version to be installed on manager instance | `string` | `"13.10.0"` | no |
+| <a name="input_gitlab_runner_version"></a> [gitlab\_runner\_version](#input\_gitlab\_runner\_version) | Gitlab runner version to be installed on manager instance | `string` | `"14.2.0"` | no |
 | <a name="input_gitlab_url"></a> [gitlab\_url](#input\_gitlab\_url) | Gitlab URL | `string` | `"https://gitlab.com"` | no |
-| <a name="input_manager"></a> [manager](#input\_manager) | Runners' manager (aka bastion) configuration | <pre>object({<br>    ami_id                      = string<br>    ami_owner                   = string<br>    instance_type               = string<br>    key_pair                    = string<br>    subnet_id                   = string<br>    associate_public_ip_address = bool<br>    assign_eip_address          = bool<br>    root_volume_size            = number<br>    ebs_optimized               = bool<br>    enable_detailed_monitoring  = bool<br>  })</pre> | n/a | yes |
+| <a name="input_manager"></a> [manager](#input\_manager) | Runners' manager (aka bastion) configuration | <pre>object({<br>    ami_id                               = string<br>    ami_owner                            = string<br>    instance_type                        = string<br>    key_pair                             = string<br>    subnet_id                            = string<br>    associate_public_ip_address          = bool<br>    assign_eip_address                   = bool<br>    root_volume_size                     = number<br>    ebs_optimized                        = bool<br>    enable_detailed_monitoring           = bool<br>    metadata_http_endpoint_enabled       = bool<br>    metadata_http_put_response_hop_limit = number<br>    metadata_http_tokens_required        = bool<br>  })</pre> | n/a | yes |
 | <a name="input_metrics_port"></a> [metrics\_port](#input\_metrics\_port) | See https://docs.gitlab.com/runner/monitoring/#configuration-of-the-metrics-http-server for more details | `number` | `9252` | no |
 | <a name="input_name"></a> [name](#input\_name) | Solution name, e.g. 'app' or 'jenkins' | `string` | n/a | yes |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace (e.g. `cp` or `cloudposse`) | `string` | `""` | no |
